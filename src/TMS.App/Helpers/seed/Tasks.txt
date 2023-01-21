@@ -1,0 +1,5 @@
+Create validation related with enumeration values,Must be implemented validation for enum value which we use for setting from Enumeration table
+Wireframe - FrontEnd Views,
+Add specific error messages when creating new candidate, Steps: 1.Login 2. Open the tab “Position“. 3. Open the position that you are the owner of. 4. Click on the “Check candidates“ button.
+Create Microservice to handle the tasks, Create Microservice to handle the tasks
+Add setting,In Jira Cloud there is no such setting. You can find  jira.text.field.character.limit only in Server edition

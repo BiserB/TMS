@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using TMS.Core.Entities;
+using TMS.Core.Enums;
 using TMS.Infrastructure.Data;
 
 namespace TMS.App.Helpers
@@ -67,8 +69,36 @@ namespace TMS.App.Helpers
 
         private static void AddTasks(AppDbContext dbContext)
         {
-            throw new Exception();
-            var tasks = GetSeedData("Tasks");
+            var taskData = GetSeedData("Tasks");
+
+            var userIds = dbContext.Users.Select(u => u.Id).ToList();
+
+            var random = new Random();
+
+            var taskTypes = Enum.GetValues(typeof(TaskTypeId)).Cast<TaskTypeId>().ToList();
+            var taskStatuses = Enum.GetValues(typeof(TaskStatusId)).Cast<TaskStatusId>().ToList();
+            var randomDateTime = new RandomDateTime();
+
+            foreach (var task in taskData)
+            {
+                var t = task.Split(',');
+                var created = randomDateTime.GetInitial();
+
+                var newTask = new Task()
+                {
+                    Name = t[0],
+                    Description = t[1],
+                    CreatorId = userIds[random.Next(userIds.Count)],
+                    TaskTypeId = taskTypes[random.Next(taskTypes.Count)],
+                    TaskStatusId = taskStatuses[random.Next(taskStatuses.Count)],
+                    CreatedOn = created,
+                    RequiredByDate = randomDateTime.GetBiggerThen(created),
+                };
+
+                dbContext.Tasks.Add(newTask);
+            }
+
+            dbContext.SaveChanges();
         }
 
         private static string[] GetSeedData(string fileName)

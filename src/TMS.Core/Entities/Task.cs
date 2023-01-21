@@ -10,6 +10,8 @@ namespace TMS.Core.Entities
 
         public string Name { get; set; }
 
+        public string Description { get; set; }
+
         public TaskTypeId TaskTypeId { get; set; }
 
         public TaskType TaskType { get; set; }
