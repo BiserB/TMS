@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TMS.App.Helpers;
+using TMS.Infrastructure.Data;
 
 namespace TMS.App
 {
@@ -11,9 +15,11 @@ namespace TMS.App
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            var connectionString = builder.Configuration.GetConnectionString("sqlConnection");
+            builder.Services.AddDbContext<AppDbContext>(b => b.UseSqlServer(connectionString, x => x.MigrationsAssembly("TMS.Infrastructure")));
+            
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -25,6 +31,8 @@ namespace TMS.App
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.Seed();
 
             app.UseAuthorization();
 
